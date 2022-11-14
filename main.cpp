@@ -1,91 +1,44 @@
 #include <stdio.h>
-#include <iostream>
-#include <list>
 
+template <typename Type>
+
+Type Min(Type a, Type b)
+{
+	if (a < b)
+	{
+		return static_cast<Type>(a);
+	}
+
+	return static_cast<Type>(b);
+
+}
+
+template<>
+
+char Min<char>(char a, char b)
+{
+	printf("êîéöÇÕë„ì¸Ç≈Ç´Ç‹ÇπÇÒ\n");
+	return '\0';
+}
 
 int main()
 {
-	std::list<const char*> yamanote;
+	int a1 = 0;
+	int b1 = 1;
 
-	yamanote.emplace_back("Tokyo");
-	yamanote.emplace_back("Kanda");
-	yamanote.emplace_back("Akihabara");
-	yamanote.emplace_back("Okachimachi");
-	yamanote.emplace_back("Ueno");
-	yamanote.emplace_back("Uguisudani");
-	yamanote.emplace_back("Nippori");
-	yamanote.emplace_back("Tabata");
-	yamanote.emplace_back("Komagome");
-	yamanote.emplace_back("Sugamo");
-	yamanote.emplace_back("Otsuka");
-	yamanote.emplace_back("Ikebukuro");
-	yamanote.emplace_back("Mejiro");
-	yamanote.emplace_back("Takadanobaba");
-	yamanote.emplace_back("Shin-Okubo");
-	yamanote.emplace_back("Shinjuku");
-	yamanote.emplace_back("Yoyogi");
-	yamanote.emplace_back("Harajuku");
-	yamanote.emplace_back("Shibuya");
-	yamanote.emplace_back("Ebisu");
-	yamanote.emplace_back("Meguro");
-	yamanote.emplace_back("Gotanda");
-	yamanote.emplace_back("Osaki");
-	yamanote.emplace_back("Shinagawa");
-	yamanote.emplace_back("Tamachi");
-	yamanote.emplace_back("Hamamatsucho");
-	yamanote.emplace_back("Hamamatsucho");
-	yamanote.emplace_back("Shimbashi");
-	yamanote.emplace_back("Yurakucho");
+	float a2 = 2;
+	float b2 = 1;
 
-	printf("1970îN\n");
-	for (std::list<const char*>::iterator itr = yamanote.begin(); itr != yamanote.end(); ++itr)
-	{
+	double a3 = 3;
+	double b3 = 2;
 
-		std::cout << *itr << "\n";
+	char a4 = 'a';
+	char b4 = 'b';
 
-	}
-
-	for (std::list<const char*>::iterator itr = yamanote.begin(); itr != yamanote.end(); ++itr)
-	{
-
-		if (*itr == "Tabata")
-		{
-			itr = yamanote.insert(itr, "Nishi-Nippori");
-
-			++itr;
-		}
-
-	}
-
-	printf("\n2019îN\n");
-
-	for (std::list<const char*>::iterator itr = yamanote.begin(); itr != yamanote.end(); ++itr)
-	{
-
-		std::cout << *itr << "\n";
-
-	}
-
-	for (std::list<const char*>::iterator itr = yamanote.begin(); itr != yamanote.end(); ++itr)
-	{
-
-		if (*itr == "Tamachi")
-		{
-			itr = yamanote.insert(itr, "Takanawa Gateway");
-
-			++itr;
-		}
-
-	}
-
-	printf("\n2020îN\n");
-
-	for (std::list<const char*>::iterator itr = yamanote.begin(); itr != yamanote.end(); ++itr)
-	{
-
-		std::cout << *itr << "\n";
-
-	}
-
+	printf("%d\n", Min<int>(a1, b1));
+	printf("%f\n", Min<float>(a2, b2));
+	printf("%lf\n", Min<double>(a3, b3));
+	printf("%c\n", Min<char>(a4, b4));
 	return 0;
 }
+
