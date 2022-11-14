@@ -2,42 +2,20 @@
 #include <stdlib.h>
 #include <time.h>
 #include <Windows.h>
+#include <functional>
 
-typedef void (*PFunc)(int a, int b);
-
-void SetTimeout(PFunc func, int second, int ans, int select)
+void SetTimeout(std::function<void()> func, int second)
 {
 
 	Sleep(second);
 
-	func(select, ans);
+	func();
 
 }
 
-void ComparisonNum(int select, int randNum)
+int main(int argc, const char* argv[])
 {
 
-
-	printf("%d\n", randNum);
-	if (randNum % 2 == 0 and select == 0)
-	{
-		printf("正解\n");
-	}
-	else if (randNum % 2 == 1 and select == 1)
-	{
-		printf("正解\n");
-	}
-	else
-	{
-		printf("不正解\n");
-	}
-
-}
-
-
-
-int main()
-{
 	//入力
 	int select;
 	printf("入力:偶数->0 奇数->1\n");
@@ -49,12 +27,29 @@ int main()
 
 	ans = rand() % 100;
 
-	//関数をセット
-	PFunc func;
-	func = ComparisonNum;
+	//関数の作成
+	std::function<void()> judgeFunc = [&]()
+	{
+
+		printf("%d\n", ans);
+		if (ans % 2 == 0 and select == 0)
+		{
+			printf("正解\n");
+		}
+		else if (ans % 2 == 1 and select == 1)
+		{
+			printf("正解\n");
+		}
+		else
+		{
+			printf("不正解\n");
+		}
+
+	};
 
 	//実行
-	SetTimeout(func, 3000, ans, select);
+	SetTimeout(judgeFunc, 2700);
 
 	return 0;
+
 }
