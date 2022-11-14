@@ -1,30 +1,60 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <Windows.h>
 
-int Wages(int time);
+typedef void (*PFunc)(int a, int b);
 
-int main()
+void SetTimeout(PFunc func, int second, int ans, int select)
 {
-	int time = 8;
-	int wage = 0;
-	for (int i = 0; i < time; i++)
-	{
-		wage += Wages(i);
-	}
 
-	printf("%d時間で一般賃金は%d円、再起賃金は%d円", time, 1072 * time, wage);
+	Sleep(second);
 
-	return 0;
+	func(select, ans);
+
 }
 
-int Wages(int time)
+void ComparisonNum(int select, int randNum)
 {
-	if (time == 0)
+
+
+	printf("%d\n", randNum);
+	if (randNum % 2 == 0 and select == 0)
 	{
-		return 100;
+		printf("正解\n");
+	}
+	else if (randNum % 2 == 1 and select == 1)
+	{
+		printf("正解\n");
 	}
 	else
 	{
-		return Wages(time - 1) * 2 - 50;
+		printf("不正解\n");
 	}
 
+}
+
+
+
+int main()
+{
+	//入力
+	int select;
+	printf("入力:偶数->0 奇数->1\n");
+	scanf_s("%d", &select);
+
+	//答えの決定
+	int ans = 0;
+	srand(time(nullptr));
+
+	ans = rand() % 100;
+
+	//関数をセット
+	PFunc func;
+	func = ComparisonNum;
+
+	//実行
+	SetTimeout(func, 3000, ans, select);
+
+	return 0;
 }
