@@ -59,8 +59,6 @@ int main()
 
 	int selectmenu = 0;
 
-	bool isEnd = false;
-
 	Enemy enemy1;
 	Enemy enemy2;
 	Enemy enemy3;
