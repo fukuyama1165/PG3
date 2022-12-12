@@ -10,18 +10,29 @@ public:
 	Enemy();
 	~Enemy();
 
-	static bool isdead;
+	
 
-	void draw();
-	void dead();
+	void Draw(int phase);
+	//‹ßÚ
+	void Proximity();
+	//ËŒ‚
+	void Shooting();
+	//—£’E
+	void Secession();
 
 private:
 
-	
+	static void (Enemy::* spFuncTable[])();
 
 };
 
-bool Enemy::isdead = false;
+
+void (Enemy::* Enemy::spFuncTable[])()
+{
+	&Enemy::Proximity,
+	&Enemy::Shooting,
+	&Enemy::Secession
+};
 
 Enemy::Enemy()
 {
@@ -31,44 +42,43 @@ Enemy::~Enemy()
 {
 }
 
-void Enemy::draw()
+void Enemy::Draw(int phase)
 {
 
-	if (isdead == false)
-	{
-		std::cout << "¶‘¶" << '\n';
-	}
-	else
-	{
-
-		std::cout << "no¶‘¶" << '\n';
-
-	}
+	(this->*spFuncTable[phase])();
 
 }
-void Enemy::dead()
+
+
+
+void Enemy::Proximity()
 {
+	std::cout << "‹ßÚ" << '\n';
+}
 
-	std::cout << "EŠQ!!!!" << '\n';
-	isdead = true;
+void Enemy::Shooting()
+{
+	std::cout << "ËŒ‚" << '\n';
+}
 
+void Enemy::Secession()
+{
+	std::cout << "—£’E" << '\n';
 }
 
 int main()
 {
 
 	int selectmenu = 0;
+	int enemyPhase = 0;
 
-	Enemy enemy1;
-	Enemy enemy2;
-	Enemy enemy3;
+	Enemy enemy;
 
 	while (true)
 	{
 
 		std::cout << "[‘€ì]" << '\n';
-		std::cout << "0:¶‘¶•`‰æ" << '\n';
-		std::cout << "1:EŠQ" << '\n';
+		std::cout << "“G‚Ìs“®" << '\n';
 		std::cout << "‚»‚Ì‘¼:I—¹" << '\n';
 
 		std::cout << "\n------------------------------------------" << '\n';
@@ -80,18 +90,17 @@ int main()
 		if (selectmenu == 0)
 		{
 
-			enemy1.draw();
-			enemy2.draw();
-			enemy3.draw();
+			enemy.Draw(enemyPhase);
 
-		}
-		else if (selectmenu == 1)
-		{
-
-			enemy1.dead();
+			enemyPhase++;
 
 		}
 		else
+		{
+			break;
+		}
+
+		if (enemyPhase > 2)
 		{
 			break;
 		}
