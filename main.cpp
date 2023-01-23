@@ -4,81 +4,130 @@
 #include <iostream>
 #include <iomanip>
 
-class Enemy
+class IShape
 {
 public:
-	Enemy();
-	~Enemy();
+	IShape();
+	~IShape();
 
-	
-
-	void Draw(int phase);
-	//‹ßÚ
-	void Proximity();
-	//ŽËŒ‚
-	void Shooting();
-	//—£’E
-	void Secession();
+	virtual void Size() = 0;
+	virtual void Draw() = 0;
 
 private:
 
-	static void (Enemy::* spFuncTable[])();
+};
+
+IShape::IShape()
+{
+}
+
+IShape::~IShape()
+{
+}
+
+class Circle:public IShape
+{
+public:
+	Circle();
+	~Circle();
+
+	void Size() override;
+	void Draw() override;
+
+	void SetR(float r) { this->r = r; };
+
+private:
+
+	float r = 1;
+	float area = 3.14159f;
+};
+
+Circle::Circle()
+{
+}
+
+Circle::~Circle()
+{
+}
+
+void Circle::Size()
+{
+
+	area = r * r * 3.14159f;
+
+}
+
+void Circle::Draw()
+{
+
+	std::cout << "‰~‚Ì–ÊÏ : " << area << '\n';
+
+}
+
+class Rectangle :public IShape
+{
+public:
+	Rectangle();
+	~Rectangle();
+
+	void Size() override;
+	void Draw() override;
+
+	void SetW(float w) { this->w = w; };
+	void SetH(float h) { this->h = h; };
+
+private:
+
+	float w = 1;
+	float h = 1;
+
+	float area = 1;
 
 };
 
-
-void (Enemy::* Enemy::spFuncTable[])()
-{
-	&Enemy::Proximity,
-	&Enemy::Shooting,
-	&Enemy::Secession
-};
-
-Enemy::Enemy()
+Rectangle::Rectangle()
 {
 }
 
-Enemy::~Enemy()
+Rectangle::~Rectangle()
 {
 }
 
-void Enemy::Draw(int phase)
+void Rectangle::Size()
 {
 
-	(this->*spFuncTable[phase])();
+	area = h * w;
 
 }
 
-
-
-void Enemy::Proximity()
+void Rectangle::Draw()
 {
-	std::cout << "‹ßÚ" << '\n';
-}
 
-void Enemy::Shooting()
-{
-	std::cout << "ŽËŒ‚" << '\n';
-}
+	std::cout << "‹éŒ`‚Ì–ÊÏ : " << area << '\n';
 
-void Enemy::Secession()
-{
-	std::cout << "—£’E" << '\n';
 }
 
 int main()
 {
 
 	int selectmenu = 0;
-	int enemyPhase = 0;
+	
+	float setNum = 0;
 
-	Enemy enemy;
+	bool isEnd = false;
+
+	Circle circle;
+	Rectangle rect;
+	
 
 	while (true)
 	{
 
 		std::cout << "[‘€ì]" << '\n';
-		std::cout << "“G‚Ìs“®" << '\n';
+		std::cout << "1.‰~‚Ì”¼ŒaC³" << '\n';
+		std::cout << "2.‹éŒ`‚ÌC³" << '\n';
+		std::cout << "3.–ÊÏ‚ÌŒvŽZ" << '\n';
+		std::cout << "4.–ÊÏ•`‰æ" << '\n';
 		std::cout << "‚»‚Ì‘¼:I—¹" << '\n';
 
 		std::cout << "\n------------------------------------------" << '\n';
@@ -87,23 +136,60 @@ int main()
 		std::cin >> selectmenu;
 		std::cin.ignore(1024, '\n');
 
-		if (selectmenu == 0)
+		switch (selectmenu)
 		{
+		case 1:
 
-			enemy.Draw(enemyPhase);
+			std::cout << "•ÏX‚·‚é”¼Œa‚Ì’l‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢" << '\n';
+			std::cin >> std::setw(256) >> setNum;
+			circle.SetR(setNum);
+			std::cin.ignore(1024, '\n');
 
-			enemyPhase++;
+			std::cout << "–ÊÏ‚ðŒvŽZ‚µ‚Ü‚·" << '\n';
+			circle.Size();
 
+			break;
+
+		case 2:
+
+			std::cout << "•ÏX‚·‚é‰¡•‚Ì’l‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢" << '\n';
+			std::cin >> std::setw(256) >> setNum;
+			rect.SetW(setNum);
+			std::cin.ignore(1024, '\n');
+
+			std::cout << "•ÏX‚·‚éc•‚Ì’l‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢" << '\n';
+			std::cin >> std::setw(256) >> setNum;
+			rect.SetH(setNum);
+			std::cin.ignore(1024, '\n');
+
+			std::cout << "–ÊÏ‚ðŒvŽZ‚µ‚Ü‚·" << '\n';
+			rect.Size();
+			
+			break;
+		case 3:
+
+			std::cout << "‰~‚Æ‹éŒ`‚Ì–ÊÏ‚ðŒvŽZ‚µ‚Ü‚·" << '\n';
+			circle.Size();
+			rect.Size();
+			
+			break;
+		case 4:
+			
+			circle.Draw();
+			rect.Draw();
+
+			break;
+		default:
+			std::cout << "I—¹‚µ‚Ü‚·" << '\n';
+			isEnd = true;
+			break;
 		}
-		else
+		if (isEnd)
 		{
 			break;
 		}
 
-		if (enemyPhase > 2)
-		{
-			break;
-		}
+		
 
 	}
 
