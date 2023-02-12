@@ -122,6 +122,10 @@ void TaskManager::AdditionTask()
     while (true)
     {
         std::cin >> ID;
+        if (cin.fail())
+        {
+            cin.clear();
+        }
         std::cin.ignore(1024, '\n');
 
         if (ID == 999)
@@ -216,6 +220,10 @@ void TaskManager::ChengStatusTask()
     while (true)
     {
         std::cin >> ID;
+        if (cin.fail())
+        {
+            cin.clear();
+        }
         std::cin.ignore(1024, '\n');
 
         if (ID == 999)
@@ -238,6 +246,10 @@ void TaskManager::ChengStatusTask()
     while (true)
     {
         std::cin >> status;
+        if (cin.fail())
+        {
+            cin.clear();
+        }
         std::cin.ignore(1024, '\n');
 
         if (status == 999)
@@ -301,6 +313,10 @@ void TaskManager::ChengPICTask()
     while (true)
     {
         std::cin >> ID;
+        if (cin.fail())
+        {
+            cin.clear();
+        }
         std::cin.ignore(1024, '\n');
 
         if (ID == 999)
@@ -323,6 +339,10 @@ void TaskManager::ChengPICTask()
     while (true)
     {
         std::cin >> picID;
+        if (cin.fail())
+        {
+            cin.clear();
+        }
         std::cin.ignore(1024, '\n');
 
         if (picID == 999)
@@ -380,6 +400,10 @@ void TaskManager::ChengTitleTask()
     while (true)
     {
         std::cin >> ID;
+        if (cin.fail())
+        {
+            cin.clear();
+        }
         std::cin.ignore(1024, '\n');
 
         if (ID == 999)
@@ -441,6 +465,10 @@ void TaskManager::ChengContentTask()
     while (true)
     {
         std::cin >> ID;
+        if (cin.fail())
+        {
+            cin.clear();
+        }
         std::cin.ignore(1024, '\n');
 
         if (ID == 999)
@@ -502,6 +530,10 @@ void TaskManager::ChengPriorityTask()
     while (true)
     {
         std::cin >> ID;
+        if (cin.fail())
+        {
+            cin.clear();
+        }
         std::cin.ignore(1024, '\n');
 
         if (ID == 999)
@@ -562,6 +594,10 @@ void TaskManager::ChengDeadlineTask()
     while (true)
     {
         std::cin >> ID;
+        if (cin.fail())
+        {
+            cin.clear();
+        }
         std::cin.ignore(1024, '\n');
 
         if (ID == 999)
@@ -621,6 +657,10 @@ void TaskManager::ChengNamePIC()
     while (true)
     {
         std::cin >> ID;
+        if (cin.fail())
+        {
+            cin.clear();
+        }
         std::cin.ignore(1024, '\n');
 
         if (ID == 999)
@@ -680,6 +720,10 @@ void TaskManager::ChengClassNamePIC()
     while (true)
     {
         std::cin >> ID;
+        if (cin.fail())
+        {
+            cin.clear();
+        }
         std::cin.ignore(1024, '\n');
 
         if (ID == 999)
@@ -739,6 +783,10 @@ void TaskManager::DeleteTask()
     while (true)
     {
         std::cin >> ID;
+        if (cin.fail())
+        {
+            cin.clear();
+        }
         std::cin.ignore(1024, '\n');
 
         if (ID == 999)
@@ -792,6 +840,10 @@ void TaskManager::DeletePIC()
     while (true)
     {
         std::cin >> ID;
+        if (cin.fail())
+        {
+            cin.clear();
+        }
         std::cin.ignore(1024, '\n');
 
         if (ID == 999)
