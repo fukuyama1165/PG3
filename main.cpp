@@ -1,424 +1,1193 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <stdexcept>
 #include <stdio.h>
 #include <iomanip>
+#include <list>
+
 
 using namespace std;
-template <typename T>
-struct Cell
-{
-    T value_;
-    Cell* prev_;
-    Cell* next_;
-    Cell()
-    {
-        prev_ = this;
-        next_ = this;
-    }
-    Cell(T value, Cell* prev, Cell* next)
-    {
-        value_ = value;
-        prev_ = prev;
-        next_ = next;
-    }
-};
-template <typename T>
 
-class DoublyLinkedList
+class PIC
 {
-private:
-    Cell<T>* dummy_;
-    int size_;
 public:
-    DoublyLinkedList()
-    {
-        dummy_ = new Cell<T>();
-        size_ = 0;
-    }
-    ~DoublyLinkedList()
-    {
-        clear();
-    }
+    PIC();
+    PIC(unsigned int ID, string Name, string ClassName);
 
-    void add(T v, Cell<T>* head)
-    {
-        // insert a new Cell between the current Cell and the next of current Cell
-        Cell<T>* newCell = new Cell<T>(v, head, head->next_);
-        head->next_->prev_ = newCell;
-        head->next_ = newCell;
-        // update the current Cell
-        head = newCell;
-        size_++;
-    }
-    void push_front(T value)
-    {
-        Cell<T>* cur = dummy_;
-        add(value, cur);
-    }
-    void push_back(T value)
-    {
-        Cell<T>* cur = dummy_->prev_;
-        add(value, cur);
-    }
-    bool empty()
-    {
-        return dummy_->next_ == dummy_;
-    }
-
-    void insert(T value,int insertNum)
-    {
-
-        Cell<T>* newCell = dummy_->prev_;
-        int num = insertNum;
-        while(num != 0)
-        {
-            newCell = newCell->next_;
-            num--;
-        }
-
-        add(value, newCell);
-        
-
-    }
-    
-    void selectDelete(int deleteNum)
-    {
-
-        if (empty())
-        {
-            throw std::logic_error("Cell is empty!");
-        }
-        Cell<T>* ptr = dummy_->next_;
-        for (int i = 0; i < deleteNum; i++)
-        {
-            ptr = ptr->next_;
-        }
-        ptr->prev_->next_ = ptr->next_;
-        ptr->next_->prev_ = ptr->prev_;
-        delete ptr;
-        size_--;
-
-    }
-
-    T remove(Cell<T>* Cell)
-    {
-        if (empty())
-        {
-            throw std::logic_error("Cell is empty!");
-        }
-        T ret = Cell->value_;
-        Cell->prev_->next_ = Cell->next_;
-        Cell->next_->prev_ = Cell->prev_;
-        delete Cell;
-        //Cell = Cell->prev_;
-        size_--;
-        return ret;
-    }
-    T pop_front()
-    {
-        Cell<T>* cur = dummy_->next_;
-        return remove(cur);
-    }
-
-    T pop_back()
-    {
-        Cell<T>* cur = dummy_->prev_;
-        return remove(cur);
-    }
-
-    void selectDraw(int drawNum)
-    {
-        Cell<T>* ptr = dummy_->next_;
-
-        for (int i = 0; i < drawNum; i++)
-        {
-            ptr = ptr->next_;
-        }
-
-        std::string a = std::string(ptr->value_);
-
-        cout << a << ' ';
-        
-
-    }
-
-    void draw()
-    {
-        Cell<T>* ptr = dummy_->next_;
-        while (ptr != dummy_)
-        {
-            cout << ptr->value_ << ' ';
-            ptr = ptr->next_;
-            cout << '\n';
-        }
-        
-    }
-
-    void edit(T value, int editNum)
-    {
-        Cell<T>* ptr = dummy_->next_;
-        for (int i = 0; i < editNum; i++)
-        {
-            ptr = ptr->next_;
-        }
-
-        ptr->value_ = value;
-
-    }
-
-    void clear()
-    {
-        while (!empty())
-        {
-            pop_front();
-        }
-    }
-
-    int size()
-    {
-        return size_;
-    }
+public:
+    unsigned int id = 0;
+    string name;
+    string className;
 };
 
-template <typename T>
-
-void menuDraw(DoublyLinkedList<T>* a)
+PIC::PIC()
 {
-    int selectmenu = 0;
+    name = "a";
+    className = "abcd";
+}
 
-    bool isEnd = false;
+PIC::PIC(unsigned int ID, string Name, string ClassName)
+{
+    id = ID;
+    name = Name;
+    className = ClassName;
+}
+
+class Task
+{
+public:
+    Task(std::string CreationTime,unsigned int ID, PIC* Pic, string Title, string Content, string Priority, string Deadline);
+
+public:
+    std::string creationTime;
+    unsigned int id = 0;
+    PIC* pic;
+    string title;
+    string content;
+    string priority;
+    string deadline;
+    string status;
+};
+
+Task::Task(std::string CreationTime,unsigned int ID, PIC* Pic, string Title, string Content, string Priority, string Deadline)
+{
+    creationTime = CreationTime;
+    id = ID;
+    pic = Pic;
+    title = Title;
+    content = Content;
+    priority = Priority;
+    deadline = Deadline;
+    status = "未完了";
+
+}
+
+class TaskManager
+{
+public:
+    TaskManager();
+    void AdditionTask();
+    void AdditionPIC();
+    void ChengStatusTask();
+    void ChengPICTask();
+    void ChengTitleTask();
+    void ChengContentTask();
+    void ChengPriorityTask();
+    void ChengDeadlineTask();
+    void ChengNamePIC();
+    void ChengClassNamePIC();
+    void DeleteTask();
+    void DeletePIC();
+    void SaveTaskFile();
+    void LoadTaskFile();
+    void SavePICFile();
+    void LoadPICFile();
+    void DrawTask();
+    void DrawPIC();
+
+    size_t GetTaskSize() { return tasks.size(); };
+    size_t GetPICSize() { return people.size(); };
+
+private:
+    std::string GetNowTime();
+
+private:
+
+    list<Task> tasks;
+    list<PIC> people;
+
+};
+
+TaskManager::TaskManager()
+{
+}
+
+void TaskManager::AdditionTask()
+{
+    int selectNum = 0;
+
+    std::string CreationTime;
+    unsigned int ID;
+    PIC* pic = nullptr;
+    string Title;
+    string Content;
+    string Priority;
+    string Deadline;
+    
+    std::cout << "[新規タスクの追加]" << '\n';
+    std::cout << "このタスクを担当する人をidで指定してください" << '\n';
+    std::cout << "戻る:999" << '\n';
     while (true)
     {
-
-        cout << "[要素の操作]" << '\n';
-        cout << "1.要素の一覧表示" << '\n';
-        cout << "2.順番を指定して要素を表示" << '\n';
-        cout << "9.要素操作に戻る" << '\n';
-
-        cout << "\n------------------------------------------" << '\n';
-        cout << "操作を選択してください" << '\n';
-
-        std::cin >> selectmenu;
+        std::cin >> ID;
         std::cin.ignore(1024, '\n');
 
-        switch (selectmenu)
+        if (ID == 999)
+        {
+            return;
+        }
+
+        if (ID<1 or people.size()<ID)
+        {
+            std::cout << "その担当者は存在しません" << '\n';
+            continue;
+        }
+
+        for (auto itr = people.begin(); itr != people.end(); itr++)
         {
 
-        case 1:
-            while (true)
+            if (itr->id == ID)
             {
-                int returnNum = 0;
-                cout << "[要素の一覧表示]" << '\n';
-                cout << "要素一覧:{" << '\n';
-                for (int i = 0; i < a->size(); i++)
-                {
-                    cout << i << "\"";
-                    a->selectDraw(i);
-                    cout << "\"";
-                    if (i != a->size() - 1)
-                    {
-                        cout << ",\n";
-                    }
-                }
-                cout << "\n}" << '\n';
-                cout << "\n要素数:" << a->size() << '\n';
-
-                cout << "\n------------------------------------------" << '\n';
-                cout << "1.要素の表示に戻る" << '\n';
-                cout << "2.要素の操作に戻る" << '\n';
-
-                std::cin >> returnNum;
-                std::cin.ignore(1024, '\n');
-                if (returnNum == 1)
-                {
-                    break;
-                }
-                else if (returnNum == 2)
-                {
-                    isEnd = true;
-                    break;
-                }
+                pic = &*itr;
             }
-                break;
 
-        case 2:
-            while (true)
+        }
+
+        
+
+        break;
+    }
+    std::cout << "このタスクの題名をつけてください" << '\n';
+    
+    std::cin >> std::setw(256) >>Title;
+    std::cin.ignore(1024, '\n');
+
+    std::cout << "このタスクの内容を書いてください" << '\n';
+
+    std::cin >> std::setw(256) >> Content;
+    std::cin.ignore(1024, '\n');
+
+    std::cout << "このタスクの優先度を書いてください" << '\n';
+
+    std::cin >> std::setw(256) >> Priority;
+    std::cin.ignore(1024, '\n');
+
+    std::cout << "このタスクの期限を決めてください(〇日後など)" << '\n';
+
+    std::cin >> std::setw(256) >> Deadline;
+    std::cin.ignore(1024, '\n');
+
+    CreationTime = GetNowTime();
+
+    Task newTask(CreationTime,(unsigned int)tasks.size()+1, pic, Title, Content, Priority, Deadline);
+
+    tasks.emplace_back(newTask);
+
+
+    std::cout << "タスクの登録が出来ました" << '\n';
+
+}
+
+void TaskManager::AdditionPIC()
+{
+
+    string name;
+    string className;
+
+    cout << "[新規担当者の追加]" << '\n';
+    cout << "この担当者の名前をいれてください" << '\n';
+
+    std::cin >> std::setw(256) >> name;
+    std::cin.ignore(1024, '\n');
+
+    cout << "この担当者のクラスをいれてください" << '\n';
+
+    std::cin >> std::setw(256) >> className;
+    std::cin.ignore(1024, '\n');
+
+    PIC newPIC((unsigned int)people.size()+1, name, className);
+
+    people.emplace_back(newPIC);
+
+    cout << "担当者の登録が出来ました ID:"<< newPIC.id << '\n';
+
+}
+
+void TaskManager::ChengStatusTask()
+{
+
+    unsigned int ID;
+    int status;
+    std::cout << "変更するタスクのidを指定してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> ID;
+        std::cin.ignore(1024, '\n');
+
+        if (ID == 999)
+        {
+            return;
+        }
+
+        if (ID < 1 or tasks.size() < ID)
+        {
+            std::cout << "そのタスクは存在しません" << '\n';
+            continue;
+        }
+
+        break;
+    }
+
+    std::cout << "ステータスを変更してください(未終了:0 終了:1)" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> status;
+        std::cin.ignore(1024, '\n');
+
+        if (status == 999)
+        {
+            return;
+        }
+
+        if (status != 1 and status != 0)
+        {
+            std::cout << "1か０で指定してください" << '\n';
+            continue;
+        }
+
+        for (auto itr = tasks.begin(); itr != tasks.end(); itr++)
+        {
+
+            if (itr->id == ID)
             {
-                int returnNum = 0;
-                int selectNum = 0;
-                cout << "[順番を指定して要素を表示]" << '\n';
-                cout << "表示したい要素の番号を指定してください" << '\n';
-                std::cin >> selectNum;
-                std::cin.ignore(1024, '\n');
-                if (selectNum < a->size()-1 or a->size()-1 < selectNum)
+
+                if (status == 1)
                 {
-                    cout << "その要素はありません" << '\n';
-                    continue;
+                    itr->status = "完了";
+                }
+                else if (status == 0)
+                {
+                    itr->status = "未完了";
+                }
+                
+
+            }
+
+        }
+
+        break;
+
+    }
+
+    if (status == 1)
+    {
+        std::cout << "ステータスを完了に変更しました" << '\n';
+    }
+    else if (status == 0)
+    {
+        std::cout << "ステータスを未完了に変更しました" << '\n';
+    }
+
+
+    
+
+}
+
+void TaskManager::ChengPICTask()
+{
+
+    unsigned int ID;
+    unsigned int picID;
+    PIC* pic = new PIC();
+    std::cout << "変更するタスクのidを指定してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> ID;
+        std::cin.ignore(1024, '\n');
+
+        if (ID == 999)
+        {
+            return;
+        }
+
+        if (ID < 1 or tasks.size() < ID)
+        {
+            std::cout << "そのタスクは存在しません" << '\n';
+            continue;
+        }
+
+        break;
+    }
+
+    std::cout << "変更する担当者のidを指定してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> picID;
+        std::cin.ignore(1024, '\n');
+
+        if (picID == 999)
+        {
+            return;
+        }
+
+        if (picID < 1 or people.size() < picID)
+        {
+            std::cout << "その担当者は存在しません" << '\n';
+            continue;
+        }
+        
+
+        for (auto itr = tasks.begin(); itr != tasks.end(); itr++)
+        {
+
+            if (itr->id == ID)
+            {
+
+                for (auto jtr = people.begin(); jtr != people.end(); jtr++)
+                {
+
+                    if (jtr->id == picID)
+                    {
+                        pic = &*jtr;
+                    }
+
+                }
+
+                itr->pic = pic;
+
+                std::cout << "担当者を"<< pic->name <<"に変更しました" << '\n';
+            }
+
+        }
+
+        delete(pic);
+        break;
+
+    }
+
+    
+
+}
+
+void TaskManager::ChengTitleTask()
+{
+
+    unsigned int ID;
+    std::string title;
+    std::cout << "変更するタスクのidを指定してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> ID;
+        std::cin.ignore(1024, '\n');
+
+        if (ID == 999)
+        {
+            return;
+        }
+
+        if (ID < 1 or tasks.size() < ID)
+        {
+            std::cout << "そのタスクは存在しません" << '\n';
+            continue;
+        }
+
+        break;
+    }
+
+    std::cout << "タイトルを変更してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> std::setw(256) >> title;
+        std::cin.ignore(1024, '\n');
+
+        if (title == "999")
+        {
+            return;
+        }
+
+        for (auto itr = tasks.begin(); itr != tasks.end(); itr++)
+        {
+
+            if (itr->id == ID)
+            {
+
+                itr->title = title;
+
+
+            }
+
+        }
+
+        break;
+
+    }
+
+    std::cout << "タイトルを" << title << "に変更しました" << '\n';
+
+}
+
+void TaskManager::ChengContentTask()
+{
+
+    unsigned int ID;
+    std::string content;
+    std::cout << "変更するタスクのidを指定してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> ID;
+        std::cin.ignore(1024, '\n');
+
+        if (ID == 999)
+        {
+            return;
+        }
+
+        if (ID < 1 or tasks.size() < ID)
+        {
+            std::cout << "そのタスクは存在しません" << '\n';
+            continue;
+        }
+
+        break;
+    }
+
+    std::cout << "内容を変更してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> std::setw(256) >> content;
+        std::cin.ignore(1024, '\n');
+
+        if (content == "999")
+        {
+            return;
+        }
+
+        for (auto itr = tasks.begin(); itr != tasks.end(); itr++)
+        {
+
+            if (itr->id == ID)
+            {
+
+                itr->content = content;
+
+
+            }
+
+        }
+
+        break;
+
+    }
+
+    std::cout << "内容を" << content << "に変更しました" << '\n';
+
+}
+
+void TaskManager::ChengPriorityTask()
+{
+
+    unsigned int ID;
+    std::string priority;
+    std::cout << "変更するタスクのidを指定してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> ID;
+        std::cin.ignore(1024, '\n');
+
+        if (ID == 999)
+        {
+            return;
+        }
+
+        if (ID < 1 or tasks.size() < ID)
+        {
+            std::cout << "そのタスクは存在しません" << '\n';
+            continue;
+        }
+
+        break;
+    }
+
+    std::cout << "優先度を変更してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> std::setw(256) >> priority;
+        std::cin.ignore(1024, '\n');
+
+        if (priority == "999")
+        {
+            return;
+        }
+
+        for (auto itr = tasks.begin(); itr != tasks.end(); itr++)
+        {
+
+            if (itr->id == ID)
+            {
+
+                itr->priority = priority;
+
+
+            }
+
+        }
+
+        break;
+
+    }
+
+    std::cout << "優先度を" << priority << "に変更しました" << '\n';
+
+}
+
+void TaskManager::ChengDeadlineTask()
+{
+    unsigned int ID;
+    std::string deadline;
+    std::cout << "変更するタスクのidを指定してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> ID;
+        std::cin.ignore(1024, '\n');
+
+        if (ID == 999)
+        {
+            return;
+        }
+
+        if (ID < 1 or tasks.size() < ID)
+        {
+            std::cout << "そのタスクは存在しません" << '\n';
+            continue;
+        }
+
+        break;
+    }
+
+    std::cout << "期限を変更してください(〇日後等)" << '\n';
+    std::cout << "戻る:abcd" << '\n';
+
+    while (true)
+    {
+        std::cin >> std::setw(256) >> deadline;
+        std::cin.ignore(1024, '\n');
+
+        if (deadline == "abcd")
+        {
+            return;
+        }
+
+        for (auto itr = tasks.begin(); itr != tasks.end(); itr++)
+        {
+
+            if (itr->id == ID)
+            {
+
+                itr->deadline = deadline;
+
+
+            }
+
+        }
+
+        break;
+
+    }
+
+    std::cout << "期限を" << deadline << "に変更しました" << '\n';
+}
+
+void TaskManager::ChengNamePIC()
+{
+    unsigned int ID;
+    std::string name;
+    std::cout << "変更する担当者のidを指定してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> ID;
+        std::cin.ignore(1024, '\n');
+
+        if (ID == 999)
+        {
+            return;
+        }
+
+        if (ID < 1 or people.size() < ID)
+        {
+            std::cout << "その担当者は存在しません" << '\n';
+            continue;
+        }
+
+        break;
+    }
+
+    std::cout << "名前を変更してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> std::setw(256) >> name;
+        std::cin.ignore(1024, '\n');
+
+        if (name == "999")
+        {
+            return;
+        }
+
+        for (auto itr = people.begin(); itr != people.end(); itr++)
+        {
+
+            if (itr->id == ID)
+            {
+
+                itr->name = name;
+
+
+            }
+
+        }
+
+        break;
+
+    }
+
+    std::cout << "名前を" << name << "に変更しました" << '\n';
+}
+
+void TaskManager::ChengClassNamePIC()
+{
+    unsigned int ID;
+    std::string className;
+    std::cout << "変更する担当者のidを指定してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> ID;
+        std::cin.ignore(1024, '\n');
+
+        if (ID == 999)
+        {
+            return;
+        }
+
+        if (ID < 1 or people.size() < ID)
+        {
+            std::cout << "その担当者は存在しません" << '\n';
+            continue;
+        }
+
+        break;
+    }
+
+    std::cout << "クラス名を変更してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> std::setw(256) >> className;
+        std::cin.ignore(1024, '\n');
+
+        if (className == "999")
+        {
+            return;
+        }
+
+        for (auto itr = people.begin(); itr != people.end(); itr++)
+        {
+
+            if (itr->id == ID)
+            {
+
+                itr->className = className;
+
+
+            }
+
+        }
+
+        break;
+
+    }
+
+    std::cout << "クラス名を" << className << "に変更しました" << '\n';
+}
+
+void TaskManager::DeleteTask()
+{
+
+    unsigned int ID;
+    std::cout << "削除するタスクのidを指定してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> ID;
+        std::cin.ignore(1024, '\n');
+
+        if (ID == 999)
+        {
+            return;
+        }
+
+        if (ID < 1 or tasks.size() < ID)
+        {
+            std::cout << "そのタスクは存在しません" << '\n';
+            continue;
+        }
+
+        break;
+    }
+
+    
+
+    for (auto itr = tasks.begin(); itr != tasks.end(); itr++)
+    {
+
+        if (itr->id == ID)
+        {
+
+            tasks.erase(itr);
+
+            break;
+        }
+
+    }
+
+    unsigned int setID=1;
+
+    for (auto itr = tasks.begin(); itr != tasks.end(); itr++)
+    {
+        itr->id = setID;
+        setID++;
+    }
+
+    std::cout << ID << "番のタスクを消去しました" << '\n';
+
+}
+
+void TaskManager::DeletePIC()
+{
+
+    unsigned int ID;
+    std::cout << "削除する担当者のidを指定してください" << '\n';
+    std::cout << "戻る:999" << '\n';
+
+    while (true)
+    {
+        std::cin >> ID;
+        std::cin.ignore(1024, '\n');
+
+        if (ID == 999)
+        {
+            return;
+        }
+
+        if (ID < 1 or people.size() < ID)
+        {
+            std::cout << "その担当者は存在しません" << '\n';
+            continue;
+        }
+
+        break;
+    }
+
+
+
+    for (auto itr = people.begin(); itr != people.end(); itr++)
+    {
+
+        if (itr->id == ID)
+        {
+
+            people.erase(itr);
+
+
+        }
+
+    }
+
+    unsigned int setID = 1;
+
+    for (auto itr = people.begin(); itr != people.end(); itr++)
+    {
+        itr->id = setID;
+        setID++;
+    }
+
+    std::cout << ID << "番のタスクを消去しました" << '\n';
+
+}
+
+void TaskManager::SaveTaskFile()
+{
+
+    std::ofstream ofs("task.csv");
+
+    for (auto itr = tasks.begin(); itr != tasks.end(); itr++)
+    {
+
+        ofs << "TCT " << itr->creationTime << std::endl;
+        ofs << "TID " << itr->id << std::endl;
+        ofs << "TPICID " << itr->pic->id << std::endl;
+        ofs << "TTI " << itr->title << std::endl;
+        ofs << "TCO " << itr->content << std::endl;
+        ofs << "TPR " << itr->priority << std::endl;
+        ofs << "TDE " << itr->deadline << std::endl;
+        ofs << "TST " << itr->status << std::endl;
+        ofs << "TEND " << std::endl;
+
+    }
+
+    std::cout << "タスクの保存をしました" << '\n';
+
+}
+
+void TaskManager::LoadTaskFile()
+{
+
+    tasks.clear();
+
+    std::string creationTime;
+    unsigned int id = 0;
+    unsigned int picId = 0;
+    PIC* pic = nullptr;
+    string title;
+    string content;
+    string priority;
+    string deadline;
+    string status;
+
+    //ファイルストリーム
+    std::ifstream file;
+
+    file.open("task.csv");
+
+    //ファイルオープン失敗をチェック
+    if (file.fail())
+    {
+        std::cout << "ファイルが存在しないか読み込めません" << '\n';
+        return;
+    }
+
+    std::string line;
+    while (std::getline(file, line))
+    {
+
+       
+
+        //1行分の文字列をストリームに変換して解析しやすくする
+        std::istringstream lineStream(line);
+
+        //半角スペース区切りで行の先頭文字列を取得
+        std::string key;
+        std::getline(lineStream, key, ' ');
+
+        //先頭文字列がTCTなら作成時間
+        if (key == "TCT")
+        {
+
+            lineStream >> creationTime;
+
+        }
+
+        //先頭文字列がTIDならid
+        if (key == "TID")
+        {
+
+            lineStream >> id;
+
+        }
+
+        //先頭文字列がTPICIDならPICのid
+        if (key == "TPICID")
+        {
+
+            lineStream >> picId;
+            if (people.size() < picId)
+            {
+                std::cout << "タスクに割り当てられている担当者が存在しません" << '\n';
+                return;
+            }
+            else
+            {
+                if (people.size() != 0)
+                {
+                    for (auto itr = people.begin(); itr != people.end(); itr++)
+                    {
+
+                        if (itr->id == picId)
+                        {
+                            pic = &*itr;
+                        }
+
+                    }
                 }
                 else
                 {
-                    cout << selectNum << ':';
-                    a->selectDraw(selectNum);
-                }
-
-               
-
-                cout << "\n------------------------------------------" << '\n';
-                cout << "1.要素の表示に戻る" << '\n';
-                cout << "2.要素の操作に戻る" << '\n';
-
-                std::cin >> returnNum;
-                std::cin.ignore(1024, '\n');
-                if (returnNum == 1)
-                {
-                    break;
-                }
-                else if (returnNum == 2)
-                {
-                    isEnd = true;
-                    break;
+                    std::cout << "担当者が存在しません" << '\n';
+                    return;
                 }
             }
 
-            break;
+            
 
-        case 9:
-            isEnd = true;
-            break;
-
-        default:
-            break;
         }
-        if (isEnd)
+
+        //先頭文字列がTTIならタイトル
+        if (key == "TTI")
         {
-            break;
+
+            lineStream >> title;
+
         }
 
-    }
+        //先頭文字列ががTCOなら内容
+        if (key == "TCO")
+        {
 
-};
-template <typename T>
-void menuInsert(DoublyLinkedList<T>* a)
-{
-    int selectNum = 0;
-    T insertNum;
-    std::string b;
-    std::string c;
-    cout << "[リスト要素の挿入]" << '\n';
-    cout << "要素を追加する場所を指定してください。最後尾に追加する場合は何も入力しないでください。" << '\n';
-    //std::cin.getline(b, 256);
-    getline(std::cin, c);
-   
-    if (c == "\0")
-    {
-       
-        selectNum = a->size()-1;
+            lineStream >> content;
+
+        }
+
+        //先頭文字列ががTPRなら優先度
+        if (key == "TPR")
+        {
+
+            lineStream >> priority;
+
+        }
+
+        //先頭文字列ががTDEなら期限
+        if (key == "TDE")
+        {
+
+            lineStream >> deadline;
+
+        }
+
+        //先頭文字列がTSTならステータス
+        if (key == "TST")
+        {
+
+            lineStream >> status;
+
+        }
+
+        //先頭文字列ががTENDなら一つ分のデータ終了
+        if (key == "TEND")
+        {
+
+            Task newTask(creationTime, id, pic, title, content, priority, deadline);
+            newTask.status = status;
+
+            tasks.emplace_back(newTask);
+        }
+
         
-    }
-    else
-    {
-        selectNum = std::stoi(c);
+
     }
 
-    if (selectNum > a->size() - 1)
-    {
-        selectNum = a->size() - 1;
-    }
+    file.close();
 
-    if (selectNum < 0)
-    {
-        selectNum = 0;
-    }
-    
-    //std::cin.ignore(1024, '\n');
-    
+   
 
-    cout << "追加する要素の値を入力してください" << '\n';
-    std::cin >> std::setw(256) >> b;
-    a->insert(b, selectNum);
-    std::cin.ignore(1024, '\n');
-    if (a->size()>=2)
-    {
-        selectNum++;
-    }
-
-    cout << "要素\"" << b << "\"が" << selectNum << "番目に挿入されました" << '\n';
-
-    
-};
-
-template <typename T>
-void menuEdit(DoublyLinkedList<T>* a)
-{
-    int b;
-    std::string c;
-    cout << "[要素の編集]" << '\n';
-    cout << "編集したい要素の番号を指定してください" << '\n';
-
-    std::cin >> b;
-    std::cin.ignore(1024, '\n');
-    if (b > a->size() - 1 or b<0)
-    {
-        cout << b << "番目の要素が見つかりませんでした" << '\n';
-    }
-    else
-    {
-        cout << b << "番目の要素の変更する値を入力してください" << '\n';
-        getline(std::cin, c);
-        a->edit(c, b);
-        cout << b << "番目の要素の値が\""<< c << "\"に変更されました" << '\n';
-        std::cin.ignore(1024, '\n');
-    }
-
-    
-}
-
-template <typename T>
-void menuDelete(DoublyLinkedList<T>* a)
-{
-
-    int b;
-    std::string c;
-    cout << "[要素の削除]" << '\n';
-    cout << "削除したい要素の番号を指定してください" << '\n';
-
-    std::cin >> b;
-
-    if (b > a->size() - 1 or b < 0)
-    {
-        cout << b << "番目の要素が見つかりませんでした" << '\n';
-    }
-    else
-    {
-        cout << b << "番目の要素\"" << std::flush;
-        a->selectDraw(b);
-        cout <<"\"を削除しました" << '\n';
-        a->selectDelete(b);
-    }
+    std::cout << "タスクの読み込みをしました" << '\n';
 
 }
 
+void TaskManager::SavePICFile()
+{
+
+    
+    std::ofstream ofs("PIC.csv");
+
+
+    for (auto itr = people.begin(); itr != people.end(); itr++)
+    {
+
+        ofs << "PID " << itr->id << std::endl;
+        ofs << "PNA " << itr->name << std::endl;
+        ofs << "PCN " << itr->className << std::endl;
+        ofs << "PEND " << std::endl;
+
+    }
+
+    std::cout << "担当者の保存をしました" << '\n';
+
+}
+
+void TaskManager::LoadPICFile()
+{
+
+    
+    people.clear();
+    unsigned int id = 0;
+    string name;
+    string className;
+
+    //ファイルストリーム
+    std::ifstream Picfile;
+
+    Picfile.open("PIC.csv");
+
+    //ファイルオープン失敗をチェック
+    if (Picfile.fail())
+    {
+        std::cout << "ファイルが存在しないか読み込めません" << '\n';
+        return;
+    }
+
+    std::string line;
+    while (std::getline(Picfile, line))
+    {
+
+        
+
+
+        //1行分の文字列をストリームに変換して解析しやすくする
+        std::istringstream lineStream(line);
+
+        //半角スペース区切りで行の先頭文字列を取得
+        std::string key;
+        std::getline(lineStream, key, ' ');
+
+        //先頭文字列がPIDならid
+        if (key == "PID")
+        {
+
+            lineStream >> id;
+
+
+        }
+
+        //先頭文字列がPNAならname
+        if (key == "PNA")
+        {
+
+            lineStream >> name;
+
+        }
+
+        //先頭文字列がPCNならclassName
+        if (key == "PCN")
+        {
+
+            lineStream >> className;
+
+        }
+
+        //先頭文字列がPENDなら一個分のデータ終了
+        if (key == "PEND")
+        {
+
+            PIC newPIC(id, name, className);
+
+            people.emplace_back(newPIC);
+
+
+        }
+    }
+
+    Picfile.close();
+
+    std::cout << "担当者の読み込みをしました" << '\n';
+
+}
+
+void TaskManager::DrawTask()
+{
+
+    for (auto itr = tasks.begin(); itr != tasks.end(); itr++)
+    {
+
+        std::cout << "作成時間 :"<< itr->creationTime << '\n';
+        std::cout << "id       :"<< itr->id << '\n';
+        std::cout << "担当者   :"<< itr->pic->name << '\n';
+        std::cout << "タイトル :"<< itr->title << '\n';
+        std::cout << "内容     :"<< itr->content << '\n';
+        std::cout << "優先度   :"<< itr->priority << '\n';
+        std::cout << "期限     :"<< itr->deadline << '\n';
+        std::cout << "状態     :"<< itr->status << '\n';
+
+    }
+
+}
+
+void TaskManager::DrawPIC()
+{
+
+    for (auto itr = people.begin(); itr != people.end(); itr++)
+    {
+
+        std::cout << "id     :" << itr->id << '\n';
+        std::cout << "名前   :" << itr->name << '\n';
+        std::cout << "クラス :" << itr->className << '\n';
+
+    }
+
+}
+
+std::string TaskManager::GetNowTime()
+{
+    //現在時間を取ってstringに入れる
+    std::time_t t = std::time(nullptr);
+    std::tm* now = new tm();
+
+    localtime_s(now,&t);
+
+    char buffer[128];
+    strftime(buffer, sizeof(buffer), "%Y-%d-%m %X", now);
+    delete(now);
+    return buffer;
+
+}
 
 int main()
 {
-    DoublyLinkedList<std::string> a;
+    
 
     int selectmenu = 0;
+    int addSelect = 0;
+    int drawSelect = 0;
+    int chengSelect = 0;
+    int deleteSelect = 0;
+    int saveSelect = 0;
+    int loadSelect = 0;
 
     bool isEnd = false;
+
+    TaskManager maneger;
 
     while (true)
     {
 
-        cout << "[要素の操作]" << '\n';
-        cout << "1.要素の表示" << '\n';
-        cout << "2.要素の挿入" << '\n';
-        if (a.size() != 0)
+        cout << "[タスク管理]" << '\n';
+        cout << "1.追加" << '\n';
+        cout << "2.描画" << '\n';
+        if (1 != 0)
         {
-            cout << "3.要素の編集" << '\n';
-            cout << "4.要素の削除" << '\n';
+            cout << "3.編集" << '\n';
+            cout << "4.削除" << '\n';
         }
+        cout << "5.保存" << '\n';
+        cout << "6.読み込み" << '\n';
         cout << "その他:終了" << '\n';
         cout << "\n------------------------------------------" << '\n';
         cout << "操作を選択してください" << '\n';
@@ -429,23 +1198,221 @@ int main()
         switch (selectmenu)
         {
         case 1:
-            menuDraw(&a);
+
+            
+            cout << "[追加]" << '\n';
+            cout << "1.タスク" << '\n';
+            cout << "2.担当者" << '\n';
+
+            cout << "その他:戻る" << '\n';
+            cout << "\n------------------------------------------" << '\n';
+            cout << "操作を選択してください" << '\n';
+
+            std::cin >> addSelect;
+            std::cin.ignore(1024, '\n');
+
+            if (addSelect == 1)
+            {
+                maneger.AdditionTask();
+            }
+            else if (addSelect == 2)
+            {
+                maneger.AdditionPIC();
+            }
+            
             break;
 
         case 2:
-            menuInsert(&a);
+            
+            
+            cout << "[描画]" << '\n';
+            cout << "1.タスク" << '\n';
+            cout << "2.担当者" << '\n';
+
+            cout << "その他:戻る" << '\n';
+            cout << "\n------------------------------------------" << '\n';
+            cout << "操作を選択してください" << '\n';
+
+            std::cin >> drawSelect;
+            std::cin.ignore(1024, '\n');
+
+            if (drawSelect == 1)
+            {
+                maneger.DrawTask();
+            }
+            else if (drawSelect == 2)
+            {
+                maneger.DrawPIC();
+            }
+            
             break;
         case 3:
-            if (a.size() != 0)
+            if (1 != 0)
             {
-                menuEdit(&a);
+                while (true)
+                {
+                    
+                    cout << "[編集]" << '\n';
+                    cout << "1.タスク" << '\n';
+                    cout << "2.担当者" << '\n';
+
+                    cout << "その他:戻る" << '\n';
+                    cout << "\n------------------------------------------" << '\n';
+                    cout << "操作を選択してください" << '\n';
+
+                    std::cin >> chengSelect;
+                    std::cin.ignore(1024, '\n');   
+
+                    if (chengSelect == 1)
+                    {
+                        int selectCheng = 0;
+                        cout << "[タスク編集]" << '\n';
+                        cout << "1.ステータス" << '\n';
+                        cout << "2.担当者" << '\n';
+                        cout << "3.タイトル" << '\n';
+                        cout << "4.内容" << '\n';
+                        cout << "5.優先度" << '\n';
+                        cout << "6.期限" << '\n';
+
+                        cout << "その他:戻る" << '\n';
+                        cout << "\n------------------------------------------" << '\n';
+                        cout << "操作を選択してください" << '\n';
+
+                        switch (selectCheng)
+                        {
+                        case 1:
+                            maneger.ChengStatusTask();
+                            break;
+                        case 2:
+                            maneger.ChengPICTask();
+                            break;
+                        case 3:
+                            maneger.ChengTitleTask();
+                            break;
+                        case 4:
+                            maneger.ChengContentTask();
+                            break;
+                        case 5:
+                            maneger.ChengPriorityTask();
+                            break;
+                        case 6:
+                            maneger.ChengDeadlineTask();
+                            break;
+                        default:
+                            break;
+                        }
+
+                    }
+                    else if (chengSelect == 2)
+                    {
+                        int selectCheng = 0;
+                        cout << "[担当者編集]" << '\n';
+                        cout << "1.名前" << '\n';
+                        cout << "2.クラス" << '\n';
+
+                        cout << "その他:戻る" << '\n';
+                        cout << "\n------------------------------------------" << '\n';
+                        cout << "操作を選択してください" << '\n';
+
+                        if (selectCheng == 1)
+                        {
+                            maneger.ChengNamePIC();
+                        }
+                        else if (selectCheng == 2)
+                        {
+                            maneger.ChengClassNamePIC();
+                        }
+                        
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
             }
             break;
         case 4:
-            if (a.size() != 0)
+            if (1 != 0)
             {
-                menuDelete(&a);
+                
+                cout << "[削除]" << '\n';
+                cout << "1.タスク" << '\n';
+                cout << "2.担当者" << '\n';
+
+                cout << "その他:戻る" << '\n';
+                cout << "\n------------------------------------------" << '\n';
+                cout << "操作を選択してください" << '\n';
+
+                std::cin >> deleteSelect;
+                std::cin.ignore(1024, '\n');
+
+                if (deleteSelect == 1)
+                {
+
+                    maneger.DeleteTask();
+
+                }
+                else if (deleteSelect == 2)
+                {
+                    maneger.DeletePIC();
+                }
             }
+            break;
+
+        case 5:
+
+            
+            cout << "[保存]" << '\n';
+            cout << "1.タスク" << '\n';
+            cout << "2.担当者" << '\n';
+
+            cout << "その他:戻る" << '\n';
+            cout << "\n------------------------------------------" << '\n';
+            cout << "操作を選択してください" << '\n';
+
+            std::cin >> saveSelect;
+            std::cin.ignore(1024, '\n');
+
+            if (saveSelect == 1)
+            {
+                maneger.SaveTaskFile();
+            }
+            else if (saveSelect == 2)
+            {
+                maneger.SavePICFile();
+            }
+
+            break;
+        case 6:
+
+            
+            cout << "[読み込み]" << '\n';
+            if (maneger.GetPICSize() != 0)
+            {
+                cout << "1.タスク" << '\n';
+            }
+            cout << "2.担当者" << '\n';
+
+            cout << "その他:戻る" << '\n';
+            cout << "\n------------------------------------------" << '\n';
+            cout << "操作を選択してください" << '\n';
+
+            std::cin >> loadSelect;
+            std::cin.ignore(1024, '\n');
+
+            if (loadSelect == 1)
+            {
+                if (maneger.GetPICSize() != 0)
+                {
+                    maneger.LoadTaskFile();
+                }
+            }
+            else if (loadSelect == 2)
+            {
+                maneger.LoadPICFile();
+            }
+
             break;
         default:
             cout << "終了します" << '\n';
